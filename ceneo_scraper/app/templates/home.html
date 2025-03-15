@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ceneo Product Review Extractor</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="nav-bar">
+      <a href="/extract">Extract</a>
+      <a href="/products">Products</a>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+    </div>
+
+    <div class="container">
+      <h1>Ceneo Product Review Extractor</h1>
+      <div>
+        <h2>Purpose:</h2>
+        <p>
+          The application is designed to extract product reviews from Ceneo.pl
+          using unique product codes. It retrieves and displays product
+          opinions, along with basic statistics and visualizations, helping
+          users analyze customer feedback efficiently.
+        </p>
+      </div>
+      <div>
+        <h2>How It Works:</h2>
+        <ol>
+          <li>Backend powered by Python Flask and MongoDB.</li>
+          <li>
+            Flask handles requests, serving product info from the database or
+            scraping new information as needed.
+          </li>
+          <li>Product ID input triggers extraction of reviews.</li>
+          <li>Reviews are analyzed, highlighting pros, cons, and ratings.</li>
+          <li>
+            Charts are generated, and data can be exported in CSV, XLSX, or JSON
+            formats.
+          </li>
+        </ol>
+      </div>
+      <div>
+        <h2>Libraries used:</h2>
+        <ul>
+          <li>Flask</li>
+          <li>BeautifulSoup (bs4)</li>
+          <li>Requests</li>
+          <li>MongoDB</li>
+          <li>Pandas & Openpyxl</li>
+          <li>Chart.js</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Development Approach:</h2>
+        <ol>
+          <li>
+            Used Flask for the backend to build a lightweight, flexible app
+            capable of handling requests efficiently.
+          </li>
+          <li>
+            Implemented MongoDB for its scalability and schema flexibility,
+            allowing dynamic storage and retrieval of product and review data.
+          </li>
+          <li>
+            Utilized Docker to containerize the application, ensuring consistent
+            development, testing, and production environments.
+          </li>
+          <li>
+            Employed web scraping techniques within Flask to gather real-time
+            product information when database queries are insufficient.
+          </li>
+          <li>
+            Focused on data export functionality, providing multiple formats
+            (CSV, XLSX, JSON) for seamless data analysis and sharing.
+          </li>
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>

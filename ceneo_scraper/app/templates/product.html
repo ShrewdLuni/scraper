@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="/extract">Extract</a>
+        <a href="/products">Products</a>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </div>
+    <div class="container">
+        <h1>{{ product.name }}</h1>
+        <p>Average Score: {{ product.average_score }}/5</p>
+        <p>Opinions Count: {{ product.opinions_count }}</p>
+    
+        <div>
+            <a href="{{ url_for('download_reviews', product_id=product_id, format='csv') }}">Download CSV</a>
+            <a href="{{ url_for('download_reviews', product_id=product_id, format='xlsx') }}">Download Excel</a>
+            <a href="{{ url_for('download_reviews', product_id=product_id, format='json') }}">Download JSON</a>
+            <a href="{{ url_for('product_charts', product_id=product_id) }}">Charts</a>
+        </div>
+    
+        <input type="text" id="filterInput" class="filter-input" placeholder="Search..." onkeyup="filterTable()">
+    
+        <table id="opinionsTable">
+            <thead>
+                <tr>
+                    {% for column in ['Author', 'Recommendation', 'Score', 'Content', 'Advantages', 'Disadvantages', 'Helpful', 'Unhelpful', 'Publish Date', 'Purchase Date'] %}
+                    <th onclick="sortTable({{ loop.index0 }})">{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for opinion in product.opinions %}
+                <tr>
+                    <td>{{ opinion.author }}</td>
+                    <td>{{ opinion.recommendation }}</td>
+                    <td>{{ opinion.score }}</td>
+                    <td>{{ opinion.content }}</td>
+                    <td>{{ ', '.join(opinion.advantages) }}</td>
+                    <td>{{ ', '.join(opinion.disadvantages) }}</td>
+                    <td>{{ opinion.helpful_count }}</td>
+                    <td>{{ opinion.unhelpful_count }}</td>
+                    <td>{{ opinion.publish_date }}</td>
+                    <td>{{ opinion.purchase_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function filterTable() {
+            let input = document.getElementById("filterInput").value.toLowerCase();
+            let rows = document.querySelectorAll("#opinionsTable tbody tr");
+            
+            rows.forEach(row => {
+                let text = row.textContent.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+
+        function sortTable(columnIndex) {
+            let table = document.getElementById("opinionsTable");
+            let rows = Array.from(table.rows).slice(1);
+            let ascending = table.dataset.sortOrder !== "asc";
+            
+            rows.sort((a, b) => {
+                let aText = a.cells[columnIndex].textContent.trim();
+                let bText = b.cells[columnIndex].textContent.trim();
+                return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+            
+            rows.forEach(row => table.appendChild(row));
+            table.dataset.sortOrder = ascending ? "asc" : "desc";
+        }
+    </script>
+</body>
+</html>
