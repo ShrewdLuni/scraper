@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product List</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="/extract">Extract</a>
+        <a href="/products">Products</a>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </div>
+    <div class="container">
+        <h1>Extracted Product List</h1>
+
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Opinions</th>
+                    <th>With Disadvantages</th>
+                    <th>With Advantages</th>
+                    <th>Avg. Score</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><a href="{{ url_for('get_product_data', product_id=product._id) }}">{{ product.name }}</a></td>
+                    <td>{{ product.opinions_count }}</td>
+                    <td>{{ product.disadvantages_count }}</td>
+                    <td>{{ product.advantages_count }}</td>
+                    <td>{{ product.average_score }}</td>
+                    <td>
+                        <a href="{{ url_for('download_reviews', product_id=product._id, format='csv') }}">CSV</a> |
+                        <a href="{{ url_for('download_reviews', product_id=product._id, format='xlsx') }}">Excel</a> |
+                        <a href="{{ url_for('download_reviews', product_id=product._id, format='json') }}">JSON</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Opinion Charts</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/charts.css') }}">
+</head>
+<body>
+    <h1>{{ product.name }}</h1>
+    <a href="/product/{{product_id}}">Back to product page</a>
+    <p>Average score: {{ product.average_score }}/5 | Total opinions: {{ product.opinions_count }}</p>
+    
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="recommendationsChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="ratingsChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const recommendationsCtx = document.getElementById('recommendationsChart').getContext('2d');
+        new Chart(recommendationsCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Recommended', 'Not Recommended'],
+                datasets: [{
+                    data: [
+                        {{ product.recommendations_count }}, 
+                        {{ product.opinions_count - product.recommendations_count }}
+                    ],
+                    backgroundColor: ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)']
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Recommendations Distribution'
+                    }
+                }
+            }
+        });
+        
+        const opinions = {{ product.opinions|tojson }};
+        const ratingsCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+        
+        opinions.forEach(opinion => {
+            const score = parseInt(opinion.score.split('/')[0]);
+            if (score >= 1 && score <= 5) {
+                ratingsCount[score]++;
+            }
+        });
+        
+        const ratingsCtx = document.getElementById('ratingsChart').getContext('2d');
+        new Chart(ratingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
+                datasets: [{
+                    label: 'Number of Opinions',
+                    data: [
+                        ratingsCount[5],
+                        ratingsCount[4],
+                        ratingsCount[3],
+                        ratingsCount[2],
+                        ratingsCount[1]
+                    ],
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Ratings Distribution'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
