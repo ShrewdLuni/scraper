@@ -54,30 +54,37 @@
         </table>
     </div>
     <script>
-        function filterTable() {
-            let input = document.getElementById("filterInput").value.toLowerCase();
-            let rows = document.querySelectorAll("#opinionsTable tbody tr");
-            
-            rows.forEach(row => {
-                let text = row.textContent.toLowerCase();
-                row.style.display = text.includes(input) ? "" : "none";
+        document.addEventListener("DOMContentLoaded", function() {
+            function filterTable() {
+                let input = document.getElementById("filterInput").value.toLowerCase();
+                let rows = document.querySelectorAll("#opinionsTable tbody tr");
+        
+                rows.forEach(row => {
+                    let text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(input) ? "" : "none";
+                });
+            }
+        
+            function sortTable(columnIndex) {
+                let table = document.getElementById("opinionsTable");
+                let rows = Array.from(table.rows).slice(1);
+                let ascending = table.dataset.sortOrder !== "asc";
+        
+                rows.sort((a, b) => {
+                    let aText = a.cells[columnIndex].textContent.trim();
+                    let bText = b.cells[columnIndex].textContent.trim();
+                    return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                });
+        
+                rows.forEach(row => table.appendChild(row));
+                table.dataset.sortOrder = ascending ? "asc" : "desc";
+            }
+        
+            document.getElementById("filterInput").addEventListener("keyup", filterTable);
+            document.querySelectorAll("#opinionsTable th").forEach((th, index) => {
+                th.addEventListener("click", () => sortTable(index));
             });
-        }
-
-        function sortTable(columnIndex) {
-            let table = document.getElementById("opinionsTable");
-            let rows = Array.from(table.rows).slice(1);
-            let ascending = table.dataset.sortOrder !== "asc";
-            
-            rows.sort((a, b) => {
-                let aText = a.cells[columnIndex].textContent.trim();
-                let bText = b.cells[columnIndex].textContent.trim();
-                return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
-            });
-            
-            rows.forEach(row => table.appendChild(row));
-            table.dataset.sortOrder = ascending ? "asc" : "desc";
-        }
+        });
     </script>
 </body>
 </html>

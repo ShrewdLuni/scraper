@@ -57,10 +57,11 @@ class CeneoScraper:
                 features = review.find_all("div", class_="review-feature__section")
                 pros = [item.text for item in features[0].findChildren("div", recursive=False)][1:] if features and len(features) > 0 else ["None"]
                 cons = [item.text for item in features[1].findChildren("div", recursive=False)][1:] if features and len(features) > 1 else ["None"]
+                time_tags = review.find_all("time")
                 review_data = {
                     "author": CeneoScraper._extract(review, "span", "user-post__author-name"),
-                    "publish_date": CeneoScraper._extract(review, "time", attr="datetime"),
-                    "purchase_date": CeneoScraper._extract(review, "time", attr="datetime", default="Brak") if len(review.find_all("time")) > 1 else "Brak",
+                    "publish_date":  time_tags[0]["datetime"] if len(time_tags) > 0 else "Brak",
+                    "purchase_date": time_tags[1]["datetime"] if len(time_tags) > 1 else "Brak",
                     "content": CeneoScraper._extract(review, "div", "user-post__text"),
                     "recommendation": CeneoScraper._extract(review, "em", "recommended", default="Nie polecam"),
                     "score": CeneoScraper._extract(review, "span", "user-post__score-count"),
